@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BasicController!{% endblock %}
+{% block head %}
+	<link rel="stylesheet" href="/code-mirror/lib/codemirror.css">
+	<link rel="stylesheet" href="/code-mirror/theme/dracula.css">
+
+	<script src="/code-mirror/lib/codemirror.js"></script>
+
+	<script src="/code-mirror/mode/xml/xml.js"></script>
+	<script src="/code-mirror/mode/twig/twig.js"></script>
+	<script src="/code-mirror/mode/htmlmixed/htmlmixed.js"></script>
+	<script src="/code-mirror/mode/php/php.js"></script>
+	<script src="/code-mirror/mode/javascript/javascript.js"></script>
+	<script src="/code-mirror/mode/clike/clike.js"></script>
+	<script src="/code-mirror/mode/python/python.js"></script>
+	<script src="/js/momentjs/moment.min.js"></script>
+
+	<script type="text/javascript" src="/js/pnotify-4.0.0/PNotify.js"></script>
+	<script type="text/javascript" src="/js/pnotify-4.0.0/PNotifyButtons.js"></script>
+
+	<link rel="stylesheet" href="/js/EnlighterJS/enlighterjs.dracula.min.css">
+	<script type="text/javascript" src="/js/EnlighterJS/enlighterjs.min.js"></script>
+{% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.CodeMirror {
+			border-radius: 3px;
+			height: 510px !important;
+		}
+
+		#buttons-container > button {
+			margin-bottom: 5px;
+		}
+
+		.enlighter-default {
+			padding: 13px 0 8px 0 !important;
+		}
+		.enlighter-default{
+			width: auto !important;
+			overflow-x: scroll !important;
+			word-wrap: normal !important;
+		}
+		.enlighter div{
+			white-space: pre !important;
+		}
+	</style>
+{% endblock %}
+
+
+{% block body %}
+	<div class="container-fluid w-75" style="margin-top: 25px;">
+		<div class="row">
+			<div class="col-9">
+				<label id="title"><strong>No Title Provided</strong></label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+{#				<textarea name="texy" form="texy-settings" id="texy"></textarea>#}
+				<pre></pre>
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+
+			<div class="col-4">
+				<p><strong>Creation Date</strong></p>
+				<p id="creationDate"></p>
+			</div>
+			<div class="col-4">
+				<p><strong>Expiration Date</strong></p>
+				<p id="expirationDate"></p>
+			</div>
+			<div class="col-4">
+				<p><strong>Language</strong></p>
+				<p id="language"></p>
+			</div>
+
+		</div>
+
+	</div>
+{% endblock %}
+{% block javascripts %}
+	<script>
+        let languageMap = {
+            "C++": "text/x-c++src",
+            "PHP": "application/x-httpd-php",
+            "JavaScript": "text/javascript",
+            "HTML": "text/html",
+            "Python": "python",
+        };
+
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        jQuery.ajax({
+            url: "/api/v1/text/{{ shortcut }}",
+            contentType: 'application/json',
+            dataType: "json",
+            method: "GET",
+            type: "GET"
+        }).done( (response) => {
+            console.log(response);
+            // var editor = CodeMirror.fromTextArea(document.querySelector('#texy'), {
+            //     lineNumbers: true,
+            //     styleActiveLine: true,
+            //     matchBrackets: true,
+            //     theme: "dracula",
+            //     viewportMargin: Infinity,
+            //     readOnly: true,
+            //     mode: languageMap[response.data.language]
+            // });
+            document.querySelector('pre').innerHTML = escapeHtml(response.data.content+ "\n".repeat(10)+"‏") ;
+            EnlighterJS.init('pre', 'code', {
+                language : 'javascript',
+                theme: 'dracula',
+                indent : 2
+            });
+
+            document.querySelector('#title > strong').innerHTML = response.data.title ? response.data.title : "No Title Provided";
+            document.querySelector('#creationDate').innerHTML = moment(response.data.creationDate).format('YYYY-MM-DD HH:mm:ss');
+            document.querySelector('#expirationDate').innerHTML = moment(response.data.expirationDate).format('YYYY-MM-DD HH:mm:ss');
+            document.querySelector('#language').innerHTML = response.data.language;
+            editor.setValue(response.data.content)
+        }).fail( (response) => {
+	        let responseJSON = response.responseJSON;
+
+	        if (responseJSON.errors[0].code === "texy.expired") {
+
+            }
+        })
+
+
+
+	</script>
+{% endblock %}
+

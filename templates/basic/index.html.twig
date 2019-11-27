@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BasicController!{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="/code-mirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/code-mirror/theme/dracula.css">
+    <script src="/code-mirror/lib/codemirror.js"></script>
+
+    <script src="/code-mirror/mode/xml/xml.js"></script>
+    <script src="/code-mirror/mode/twig/twig.js"></script>
+    <script src="/code-mirror/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="/code-mirror/mode/php/php.js"></script>
+    <script src="/code-mirror/mode/javascript/javascript.js"></script>
+    <script src="/code-mirror/mode/clike/clike.js"></script>
+    <script src="/code-mirror/mode/python/python.js"></script>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .CodeMirror {
+            border-radius: 3px;
+            height: 510px !important;
+        }
+
+        #buttons-container > button {
+            margin-bottom: 5px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+<div class="container-fluid w-75" style="margin-top: 25px;">
+    <div class="row">
+        <div class="col-9">
+            <label for="texy d-block"><strong>New Texy</strong></label>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-9">
+            <textarea name="texy" form="texy-settings" id="texy"></textarea>
+        </div>
+        <div class="col-3" id="buttons-container">
+            <button type="submit" form="texy-settings" class="btn btn-success w-100">Save</button>
+            <button type="submit" form="texy-settings" class="btn btn-warning w-100">Clean</button>
+            <form id="texy-settings" action="" method="post">
+                <div class="form-group">
+                    <label for="language">Title</label>
+                    <input type="text" name="name" id="texyName" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="expirationInterval">Expiration Interval</label>
+                    <select class="form-control" id="expirationInterval" name="expirationInterval">
+                        <option value="PT5M">5 Minutes</option>
+                        <option value="PT10M">10 Minutes</option>
+                        <option value="PT1H">1 Hour</option>
+                        <option value="P1D">1 Day</option>
+                        <option value="P2D">2 Days</option>
+                        <option value="P1W">1 Week</option>
+                        <option value="P2W">2 Weeks</option>
+                        <option value="P1M">1 Month</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="language">Syntax Language</label>
+                    <select class="form-control" id="language" name="language">
+                        <option value="C++">C++</option>
+                        <option value="PHP">PHP</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="HTML">HTML</option>
+                        <option value="Python">Python</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-12">
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        let syntaxLanguageInput = document.querySelector('#language');
+        let expirationIntervalInput = document.querySelector('#expirationInterval');
+        let nameInput = document.querySelector('#texyName');
+
+        let languageMap = {
+            "C++": "text/x-c++src",
+            "PHP": "application/x-httpd-php",
+            "JavaScript": "text/javascript",
+            "HTML": "text/html",
+            "Python": "python",
+        };
+
+        var editor = CodeMirror.fromTextArea(document.querySelector('#texy'), {
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true,
+            theme: "dracula",
+            viewportMargin: Infinity,
+            mode: languageMap[syntaxLanguageInput.value]
+        });
+
+        console.log(languageMap[syntaxLanguageInput.value])
+
+        syntaxLanguageInput.addEventListener('change', function(e) {
+            editor.setOption("mode", languageMap[this.value]);
+        });
+
+        // document.addEventListener('DOMContentLoaded', function(e) {
+        //     editor.setOption("mode", languageMap[syntaxLanguageInput.value]);
+        // });
+
+        document.querySelector('form#texy-settings').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let requestData = {
+                content: editor.getValue(),
+                expirationInterval: expirationIntervalInput.value,
+                language: syntaxLanguageInput.value,
+                name: nameInput.value
+            };
+
+            jQuery.ajax({
+                url: "/api/v1/text",
+                cache: false,
+                contentType: 'application/json',
+                dataType: "json",
+                data: JSON.stringify(requestData),
+                method: "POST",
+                type: "POST"
+            }).done( (response) => {
+                console.log(response);
+                location.href = `/texy/${response.data.shortcut}`;
+            })
+        })
+        // editor.setOption("theme", choice);
+
+    </script>
+{% endblock %}
+

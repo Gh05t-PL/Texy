@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<script
+				src="https://code.jquery.com/jquery-3.4.1.js"
+				integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+				crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="/js/EnlighterJS/enlighterjs.dracula.min.css">
+		<script type="text/javascript" src="/js/EnlighterJS/enlighterjs.min.js"></script>
+		<title>Document</title>
+		<style>
+			.enlighter-toolbar, .sf-toolbar {
+				display: none !important;
+			}
+			body {
+				background: #282a36;
+			}
+			.enlighter-default {
+				padding: 20px 0 0px 0 !important;
+			}
+			.enlighter-default{
+				width: auto !important;
+				word-wrap: normal !important;
+			}
+			.enlighter div{
+				white-space: pre !important;
+			}
+
+		</style>
+	</head>
+	<body>
+		{% if  date() >= date(texy.expirationDate) %}
+			<pre>Expired</pre>
+		{% else %}
+			<pre>{{ texy.content }}</pre>
+		{% endif %}
+
+		<script>
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            jQuery.ajax({
+                url: "/api/v1/text/{{ shortcut }}",
+                contentType: 'application/json',
+                dataType: "json",
+                method: "GET",
+                type: "GET"
+            }).always( (response) => {
+                console.log(response);
+                // var editor = CodeMirror.fromTextArea(document.querySelector('#texy'), {
+                //     lineNumbers: true,
+                //     styleActiveLine: true,
+                //     matchBrackets: true,
+                //     theme: "dracula",
+                //     viewportMargin: Infinity,
+                //     readOnly: true,
+                //     mode: languageMap[response.data.language]
+                // });
+                // document.querySelector('pre').innerHTML = escapeHtml(response.data.content+ "\n".repeat(10)+"‏") ;
+                EnlighterJS.init('pre', 'code', {
+                    language : 'cpp',
+                    theme: 'dracula',
+                    indent : 2,
+                    linehover: false,
+                });
+            })
+		</script>
+	</body>
+</html>
+
