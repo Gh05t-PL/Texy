@@ -37,14 +37,15 @@
 				{% endfor %}
 			</tbody>
 		</table>
-		<div class="button-container d-flex justify-content-between">
-			<a href="/list/texy/{{ page-1 > 0 ? page-1 : 1 }}">
-				<button class="btn btn-primary" {{ page-1 > 0 ? "" : "disabled" }}>Back</button>
-			</a>
-			<a href="/list/texy/{{ page+1 < pages ? page+1 : pages }}">
-				<button class="btn btn-primary" {{ page+1 < pages ? "" : "disabled" }}>Next</button>
-			</a>
-		</div>
+
+	</div>
+	<div class="container-fluid w-75 button-container d-flex justify-content-between">
+		<a href="/list/texy/{{ page-1 > 0 ? page-1 : 1 }}">
+			<button class="btn btn-primary" {{ page-1 > 0 ? "" : "disabled" }}>Back</button>
+		</a>
+		<a href="/list/texy/{{ page+1 < pages ? page+1 : pages }}">
+			<button class="btn btn-primary" {{ page+1 < pages ? "" : "disabled" }}>Next</button>
+		</a>
 	</div>
 	<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
