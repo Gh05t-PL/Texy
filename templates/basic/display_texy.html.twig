@@ -137,7 +137,7 @@
 	        let responseJSON = response.responseJSON;
 
 	        if (responseJSON.errors[0].code === "texy.expired") {
-
+				document.querySelector(".container-fluid.w-75").innerHTML = "<h1>This paste has expired</h1>";
             }
         })
 
