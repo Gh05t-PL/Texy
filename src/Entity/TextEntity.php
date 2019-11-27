@@ -56,6 +56,16 @@ class TextEntity
      */
     private $syntaxLanguage;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isPrivate;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $thumbnail;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +163,30 @@ class TextEntity
     public function setSyntaxLanguage(?string $syntaxLanguage): self
     {
         $this->syntaxLanguage = $syntaxLanguage;
+
+        return $this;
+    }
+
+    public function getIsPrivate(): ?bool
+    {
+        return $this->isPrivate;
+    }
+
+    public function setIsPrivate(?bool $isPrivate): self
+    {
+        $this->isPrivate = $isPrivate;
+
+        return $this;
+    }
+
+    public function getThumbnail(): ?string
+    {
+        return $this->thumbnail;
+    }
+
+    public function setThumbnail(?string $thumbnail): self
+    {
+        $this->thumbnail = $thumbnail;
 
         return $this;
     }

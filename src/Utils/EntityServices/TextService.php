@@ -18,7 +18,7 @@ class TextService
 		$this->textRepository = $em->getRepository(TextEntity::class);
 	}
 
-	public function getOneTextBy(array $criteria)
+	public function getOneTextBy(array $criteria): ?TextEntity
 	{
 		return $this->textRepository->findOneBy(array_merge(
 			$criteria,
@@ -28,21 +28,26 @@ class TextService
 		));
 	}
 
-	public function getOneByShortcut(string $shortcut)
+	public function getOneByShortcut(string $shortcut): ?TextEntity
 	{
 		return $this->textRepository->findOneBy([
 			'shortcut' => $shortcut
 		]);
 	}
 
-	public function getTextBy(array $criteria): ?TextEntity
+	public function getTextBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
 	{
-		return $this->textRepository->findBy(array_merge(
-			$criteria,
-			[
+		return $this->textRepository->findBy(
+			array_merge(
+				$criteria,
+				[
 
-			]
-		));
+				]
+			),
+			$orderBy,
+			$limit,
+			$offset
+		);
 	}
 
 	public function remove(TextEntity $text)

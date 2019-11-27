@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BasicController!{% endblock %}
+{% block title %}Texy - Paste your snippet and share!{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="/code-mirror/lib/codemirror.css">
     <link rel="stylesheet" href="/code-mirror/theme/dracula.css">
@@ -72,6 +72,13 @@
                         <option value="Python">Python</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="private">Visibility</label>
+                    <select class="form-control" id="private" name="private">
+                        <option value="0">Public</option>
+                        <option value="1">Private</option>
+                    </select>
+                </div>
             </form>
         </div>
     </div>
@@ -85,10 +92,12 @@
 </div>
 {% endblock %}
 {% block javascripts %}
+    {{ parent() }}
     <script>
         let syntaxLanguageInput = document.querySelector('#language');
         let expirationIntervalInput = document.querySelector('#expirationInterval');
         let nameInput = document.querySelector('#texyName');
+        let privateInput = document.querySelector('#private');
 
         let languageMap = {
             "C++": "text/x-c++src",
@@ -123,7 +132,8 @@
                 content: editor.getValue(),
                 expirationInterval: expirationIntervalInput.value,
                 language: syntaxLanguageInput.value,
-                name: nameInput.value
+                name: nameInput.value,
+                isPrivate: !!Number(privateInput.value)
             };
 
             jQuery.ajax({

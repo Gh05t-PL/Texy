@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BasicController!{% endblock %}
+{% block title %}Texy - Paste your snippet and share!{% endblock %}
 {% block head %}
 	<link rel="stylesheet" href="/code-mirror/lib/codemirror.css">
 	<link rel="stylesheet" href="/code-mirror/theme/dracula.css">
@@ -14,6 +14,7 @@
 	<script src="/code-mirror/mode/javascript/javascript.js"></script>
 	<script src="/code-mirror/mode/clike/clike.js"></script>
 	<script src="/code-mirror/mode/python/python.js"></script>
+
 	<script src="/js/momentjs/moment.min.js"></script>
 
 	<script type="text/javascript" src="/js/pnotify-4.0.0/PNotify.js"></script>
@@ -120,7 +121,7 @@
             //     readOnly: true,
             //     mode: languageMap[response.data.language]
             // });
-            document.querySelector('pre').innerHTML = escapeHtml(response.data.content+ "\n".repeat(10)+"‏") ;
+            document.querySelector('pre').innerHTML = escapeHtml(response.data.content) ;
             EnlighterJS.init('pre', 'code', {
                 language : 'javascript',
                 theme: 'dracula',

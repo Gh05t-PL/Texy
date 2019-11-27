@@ -91,6 +91,7 @@ class ApiTextController extends AbstractController
 			->setShortcut($generator->generate())
 			->setSyntaxLanguage($requestData->language)
 			->setOpens(100)
+			->setIsPrivate($requestData->isPrivate)
 			->setTitle($requestData->name);
 
 		$textService->save($textEntity);
@@ -119,6 +120,7 @@ class ApiTextController extends AbstractController
 			'opens' => $textEntity->getOpens(),
 			'language' => $textEntity->getSyntaxLanguage(),
 			'title' => $textEntity->getTitle(),
+			'isPrivate' => $textEntity->getIsPrivate(),
 		];
     }
 }

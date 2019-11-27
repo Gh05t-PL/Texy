@@ -25,18 +25,18 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="/">Texy</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="/">Paste Your Content <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">List</a>
+                        <a class="nav-link" href="/list/texy">List</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">API</a>
@@ -52,6 +52,18 @@
 
 
 
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script>
+                document.addEventListener('DOMContentLoaded', (e) => {
+                    let selector = `a.nav-link[href='${location.pathname}']`;
+                    selector = selector.replace(/(\/\d+)/g, function(match, number) {
+                        return '';
+                    });
+
+                    console.log(selector)
+                    document.querySelector(selector).parentElement.classList.toggle('active')
+                })
+            </script>
+        {% endblock %}
     </body>
 </html>

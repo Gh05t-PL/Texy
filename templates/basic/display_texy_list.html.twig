@@ -1,10 +1,80 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-
+{% block title %}Texy - List - Paste your snippet and share!{% endblock %}
+{% block head %}
+	{{ parent() }}
+	<script src="{{ asset('js/momentjs/moment.min.js') }}"></script>
 {% endblock %}
 
-{% block title %}
+{% block stylesheets %}
+	<style>
+		tbody img {
+			cursor: pointer;
+		}
+	</style>
+{% endblock %}
 
+
+{% block body %}
+	<div class="container-fluid w-75" style="margin-top: 25px;">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Thumbnail</th>
+					<th>Title</th>
+					<th>Created At</th>
+					<th>Language</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for texy in texies %}
+					<tr>
+						<td><img src="/images/codeThumbs/{{ texy.shortcut }}.png" alt="" style="height: 50px; width: 70px; object-fit: scale-down"></td>
+						<td><a href="/texy/{{ texy.shortcut }}">{{ texy.title ? texy.title : 'No Title Provided' }}</a></td>
+						<td>{{ texy.creationDate|date("Y-m-d\\TH:i:sP") }}</td>
+						<td>{{ texy.syntaxLanguage }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="button-container d-flex justify-content-between">
+			<a href="/list/texy/{{ page-1 > 0 ? page-1 : 1 }}">
+				<button class="btn btn-primary" {{ page-1 > 0 ? "" : "disabled" }}>Back</button>
+			</a>
+			<a href="/list/texy/{{ page+1 < pages ? page+1 : pages }}">
+				<button class="btn btn-primary" {{ page+1 < pages ? "" : "disabled" }}>Next</button>
+			</a>
+		</div>
+	</div>
+	<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<p>Eho</p>
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				</div>
+				<div class="modal-body" style="display: grid">
+					<img src="" id="imagepreview" style="width: 100%; height: auto; object-fit: scale-down; margin: auto;" >
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	<script>
+		Array.from(document.querySelectorAll("table > tbody td:nth-child(3)")).forEach( (e) => {
+		    e.innerHTML = moment(e.innerText).format('YYYY-MM-DD HH:mm:ss');
+		})
+        $("tbody td img").on("click", function() {
+            $('#imagepreview').attr('src', $(this).attr('src')); // here asign the image to the modal when the user click the enlarge link
+            $('#imagemodal').modal('show'); // imagemodal is the id attribute assigned to the bootstrap modal, then i use the show function
+        });
+	</script>
 {% endblock %}
 
