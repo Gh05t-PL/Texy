@@ -30,12 +30,14 @@ class GenerateThumbnailsCommand extends Command
     {
         $this
             ->setDescription('Add a short description for your command')
+	        ->addArgument('bufferSize', InputArgument::OPTIONAL, "buffer size for renderer");
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
 
         $io->writeln($this->thumbnailsDir);
 	    $texies = $this->textService->getTextBy([
@@ -44,6 +46,7 @@ class GenerateThumbnailsCommand extends Command
 
 	    //$texies = ['sdGLJDNH','ibLpz0Zw','Keu60jM3'];
 	    $i = 1;
+	    $bufferSize = (int) ($input->getArgument('bufferSize') ? $input->getArgument('bufferSize') : 1);
 	    foreach ($texies as $texy) {
 		    $t = $this->thumbnailsDir . $texy->getShortcut();
 		    $io->writeln($t);
@@ -52,7 +55,7 @@ class GenerateThumbnailsCommand extends Command
 
 		    $texy->setThumbnail('/images/codeThumbs/' . $texy->getShortcut() . '.png');
 		    $this->textService->save($texy);
-		    if ($i % 3 === 0)
+		    if ($i % $bufferSize === 0)
 		    	$process->wait();
 			$i++;
 		    $io->writeln($process->getOutput());
