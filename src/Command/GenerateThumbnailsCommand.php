@@ -52,7 +52,7 @@ class GenerateThumbnailsCommand extends Command
 
 		    $texy->setThumbnail('/images/codeThumbs/' . $texy->getShortcut() . '.png');
 		    $this->textService->save($texy);
-		    if ($i % 20 === 0)
+		    if ($i % 3 === 0)
 		    	$process->wait();
 			$i++;
 		    $io->writeln($process->getOutput());
