@@ -20,4 +20,4 @@
 
 .idea/
 
-public/images/codeThumbs/
+public/images/codeThumbs/*.png
