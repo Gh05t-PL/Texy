@@ -22,6 +22,7 @@ class GenerateThumbnailsCommand extends Command
     {
 	    parent::__construct($name);
 	    $this->thumbnailsDir = $parameterBag->get('kernel.project_dir') . '/public/images/codeThumbs/';
+	    $this->commandsDir = $parameterBag->get('kernel.project_dir') . '/src/Command/';
 	    $this->textService = $textService;
     }
 
@@ -42,20 +43,24 @@ class GenerateThumbnailsCommand extends Command
 	    ]);
 
 	    //$texies = ['sdGLJDNH','ibLpz0Zw','Keu60jM3'];
+	    $i = 1;
 	    foreach ($texies as $texy) {
 		    $t = $this->thumbnailsDir . $texy->getShortcut();
 		    $io->writeln($t);
-	    	$process = new Process(['cutycapt', "--url=http://192.8.1.2/texy/{$texy->getShortcut()}/html","--out={$t}.png", '--delay=1500', '--min-height=1']);
+	    	$process = new Process(['node', "{$this->commandsDir}screenshotter.js","http://192.8.1.2/texy/{$texy->getShortcut()}/html","{$t}"]);
 		    $process->start();
 
 		    $texy->setThumbnail('/images/codeThumbs/' . $texy->getShortcut() . '.png');
 		    $this->textService->save($texy);
-
+		    if ($i % 20 === 0)
+		    	$process->wait();
+			$i++;
 		    $io->writeln($process->getOutput());
 	    }
 
 	    if (!empty($texies))
 	        sleep(15);
+
         return 0;
     }
 }
